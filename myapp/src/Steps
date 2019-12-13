@@ -1,0 +1,115 @@
+
+ Steps:
+
+ Dependencies: redux, react-redux, redux-thunk, axios
+
+ 1. import create store from redux
+    import provider from react-redux
+
+    const store = createStore(reducer);
+
+2. wrap App in Provider store={store}
+
+
+3. create reducers folder and set up basic reducer and state
+
+    const initialState = {}
+
+    const reducer = (state = intialState, action) => {
+        switch(action.type) {
+            default: 
+            return state
+        }
+    }
+    export default reducer;
+
+    import this reducer in index.js in Reducer and export it 
+
+    import it in index.js (main);
+
+4. set up components folder, create component file.
+
+    const Player = props => {
+
+        return 
+        (<div> 
+        
+        </div>
+        )
+    }
+    export default Player;
+
+5. Import it into App.js and display it. 
+
+6. in component file:
+    import {connect} from "react-redux"
+
+    const mapStateToProps = state => {
+        return{
+            hero: state.hero,
+            games: state.games,
+            win: state.win,
+             isFetching: state.isFetching,
+             error: state.error,
+        }
+    }
+    export default connect(mapStateToProps, {})(Player);
+
+7. Create Actions folder (index.js and playerActions);
+
+    import axios from "axios";
+
+    export const FETCH_PLAYER_START = 'FETCH_PLAYER_START';
+    export const FETCH_PLAYER_SUCCESS = 'FETCH_PLAYER_SUCCESS';
+    export const FETCH_PLAYER_FAILURE = 'FETCH_PLAYER_FAILURE';
+
+    - create getData from api function:
+
+    export const getPlayer = () => dispatch => {
+    dispatch({ type: FETCH_PLAYER_START});
+    axios.get(`https://api.opendota.com/api/players/${account_id}/heroes`)
+    .then(res => {
+        dispatch({ type: FETCH_PLAYER_SUCCESS, payload: res.data.value })
+    })
+    .catch(err => {
+        dispatch({ type: FETCH_PLAYER_FAILURE, payload: err.response})
+    })
+    };
+
+8. Export these const in the index.js/Action file.
+
+    export { FETCH_PLAYER_FAILURE, FETCH_PLAYER_START, FETCH_PLAYER_SUCCESS, getPlayer} from "./playerActions";
+
+9. Set up switch cases in playerReducer and import actions;
+
+    case FETCH_PLAYER_START:
+        return{
+            ...state,
+            isFetching: true
+        }
+        case FETCH_PLAYER_SUCCESS:
+        return{
+            ...state,
+            teams: action.payload,
+            isFetching: false,
+        }
+        case FETCH_PLAYER_FAILURE:
+            return {
+                ...state,
+                isFetching: false,
+                error: action.payload
+            }
+
+10. index.js - import thunk from redux-thunk and logger from redux logger
+             - import { createStore, applyMiddleware, compose } from 'redux';
+        import thunk from 'redux-thunk';
+        import logger from 'redux-logger';
+
+        const composeEnhancers = window.__REDUX_DEVTOOLS_EXTENSION_COMPOSE__ || compose;
+
+        const store = createStore(
+          reducer,
+         composeEnhancers(applyMiddleware(thunk, logger))
+        );
+
+11. MAKE SURE YOU IMPORT THE GETPLAYER FUNCTION TO YOUR COMPONENT AND IN MAPSTATETOPROPS EQUATION
